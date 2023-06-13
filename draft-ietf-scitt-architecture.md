@@ -585,9 +585,9 @@ Receipts are based on COSE Signed Merkle Tree Proofs ({{-COMETRE}}) with an addi
 We also introduce the following requirements for the COSE signature of the Merkle Root:
 
 - The SCITT version header MUST be included and its value match the `version` field of the Receipt stucture.
-- The DID of issuer header (like in Signed Claims) MUST be included and its value match the `ts_identifier` field of the Receipt structure.
+- The DID of the Transparency Service that issued the Receipt MUST be included as a protected header and its value match the `ts_identifier` field of the Receipt structure.
 - TS MAY include the Registration policy info header to indicate to verifiers what policies have been applied at the registration of this claim.
-- Since {{-COMETRE}} uses optional headers, the `crit` header (id: 2) MUST be included and all SCITT-specific headers (version, DID of TS and Registration Policy) MUST be marked critical.
+- {{-COMETRE}} already requires the `crit` header (id: 2) to be included. In addition to the `tree_alg` label, it MUST include all non-optional Receipt-specific protected headers: `receipt_version`, `ts_identifier`).
 
 The following registration policies are built-in and MAY be used by verifiers to help decide the trustworthiness of the Transparent Statement:
 
@@ -596,9 +596,9 @@ The following registration policies are built-in and MAY be used by verifiers to
 
 ~~~ cddl
 Receipt = [
-    version: int,
+    receipt_version: int,
     ts_identifier: tstr,
-    proof: SignedMerkleTreeProof
+    proof: bstr .cbor smtr   ; Defined in {{-COMETRE}}
 ]
 
 ; Additional protected headers in the COSE signed_tree_root of the SignedMerkleTreeProof
